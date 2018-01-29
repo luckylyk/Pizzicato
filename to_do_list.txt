@@ -1,0 +1,18 @@
+###  TO DO  ###
+Preferences : 
+  - Savable Preference
+  - Preferences Editor
+  - Extentions Editor
+
+Export PDF :
+  - combine PDF functions
+  - PDF combiner dialog box
+
+- renameable band
+- import audio files
+- import working files
+
+Playlist Generator :
+  - generator model
+  - generator functions
+  - generator interface
