@@ -1,5 +1,5 @@
-from PyQt4.phonon import Phonon
-from PyQt4 import QtGui, QtCore
+# from PyQt5.phonon import Phonon
+from PyQt5 import QtCore, QtWidgets
 from Pizzicato import text
 from functools import partial
 import os
@@ -7,21 +7,21 @@ import os
 
 def warning(message, question=False, title='Warning !'):
     if not question:
-        return QtGui.QMessageBox(
-            QtGui.QMessageBox.Warning, title, message, buttons=QtGui.QMessageBox.Ok)
+        return QtWidgets.QMessageBox(
+            QtWidgets.QMessageBox.Warning, title, message, buttons=QtWidgets.QMessageBox.Ok)
     else:
-        question = QtGui.QMessageBox.warning(
-            None, title, message, QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
-        return True if question == QtGui.QMessageBox.AcceptRole else False
+        question = QtWidgets.QMessageBox.warning(
+            None, title, message, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
+        return True if question == QtWidgets.QMessageBox.AcceptRole else False
 
 
-class LineEditAsLabel(QtGui.QLineEdit):
+class LineEditAsLabel(QtWidgets.QLineEdit):
 
     def __init__(self, caption, parent=None):
         super(LineEditAsLabel, self).__init__(caption, parent)
 
 
-class FloatEditLineWidget(QtGui.QLineEdit):
+class FloatEditLineWidget(QtWidgets.QLineEdit):
     accepted = QtCore.pyqtSignal()
     rejected = QtCore.pyqtSignal()
 
@@ -38,7 +38,7 @@ class FloatEditLineWidget(QtGui.QLineEdit):
         return self.rejected.emit()
 
 
-class FloatEditLineView(QtGui.QWidget):
+class FloatEditLineView(QtWidgets.QWidget):
     accepted = QtCore.pyqtSignal(str)
 
     def __init__(self, caption, parent=None):
@@ -55,7 +55,7 @@ class FloatEditLineView(QtGui.QWidget):
         self._float_edit_line_widget.accepted.connect(self.accept)
         self._float_edit_line_widget.rejected.connect(self.close)
 
-        self._layout = QtGui.QHBoxLayout(self)
+        self._layout = QtWidgets.QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
         self._layout.addWidget(self._float_edit_line_widget)
 
@@ -64,117 +64,117 @@ class FloatEditLineView(QtGui.QWidget):
         self.close()
 
 
-class SoundReader(QtGui.QWidget):
+# class SoundReader(QtWidgets.QWidget):
 
-    def __init__(self, parent=None):
-        super(SoundReader, self).__init__(parent)
-        self._audio_file = None
-        self._media_object = Phonon.MediaObject(self)
-        self._audio_output = Phonon.AudioOutput(Phonon.MusicCategory, self)
+#     def __init__(self, parent=None):
+#         super(SoundReader, self).__init__(parent)
+#         self._audio_file = None
+#         self._media_object = Phonon.MediaObject(self)
+#         self._audio_output = Phonon.AudioOutput(Phonon.MusicCategory, self)
 
-        self._media_object.setTickInterval(1000)
-        self._media_object.tick.connect(
-            self.on_media_object_tick)
-        self._media_object.stateChanged.connect(
-            self.on_media_object_stateChanged)
-        self._media_object.aboutToFinish.connect(
-            self._media_object.stop)
+#         self._media_object.setTickInterval(1000)
+#         self._media_object.tick.connect(
+#             self.on_media_object_tick)
+#         self._media_object.stateChanged.connect(
+#             self.on_media_object_stateChanged)
+#         self._media_object.aboutToFinish.connect(
+#             self._media_object.stop)
 
-        Phonon.createPath(self._media_object, self._audio_output)
-        self.initUI()
+#         Phonon.createPath(self._media_object, self._audio_output)
+#         self.initUI()
 
-    def initUI(self):
-        self._actions = self._create_actions()
-        self._actions_bar = self._create_actions_bar()
-        self._seek_slider = Phonon.SeekSlider(self)
-        self._seek_slider.setMediaObject(self._media_object)
-        self._time = QtGui.QLabel('00:00')
-        self._volume_slider = Phonon.VolumeSlider(self)
-        self._volume_slider.setAudioOutput(self._audio_output)
+#     def initUI(self):
+#         self._actions = self._create_actions()
+#         self._actions_bar = self._create_actions_bar()
+#         self._seek_slider = Phonon.SeekSlider(self)
+#         self._seek_slider.setMediaObject(self._media_object)
+#         self._time = QtWidgets.QLabel('00:00')
+#         self._volume_slider = Phonon.VolumeSlider(self)
+#         self._volume_slider.setAudioOutput(self._audio_output)
 
-        self._layout = QtGui.QHBoxLayout(self)
-        self._layout.setContentsMargins(0, 0, 0, 0)
-        self._layout.addWidget(self._actions_bar)
-        self._layout.addWidget(self._seek_slider)
-        self._layout.addWidget(self._time)
-        self._layout.addWidget(self._volume_slider)
+#         self._layout = QtWidgets.QHBoxLayout(self)
+#         self._layout.setContentsMargins(0, 0, 0, 0)
+#         self._layout.addWidget(self._actions_bar)
+#         self._layout.addWidget(self._seek_slider)
+#         self._layout.addWidget(self._time)
+#         self._layout.addWidget(self._volume_slider)
 
-    def _create_actions(self):
-        style = self.style()
-        actions = QtGui.QWidget(self)
+#     def _create_actions(self):
+#         style = self.style()
+#         actions = QtWidgets.QWidget(self)
 
-        actions.play = QtGui.QAction(
-            style.standardIcon(QtGui.QStyle.SP_MediaPlay), '', self)
-        actions.play.triggered.connect(self.on_play)
-        actions.play.setEnabled(False)
+#         actions.play = QtWidgets.QAction(
+#             style.standardIcon(QtWidgets.QStyle.SP_MediaPlay), '', self)
+#         actions.play.triggered.connect(self.on_play)
+#         actions.play.setEnabled(False)
 
-        actions.pause = QtGui.QAction(
-            style.standardIcon(QtGui.QStyle.SP_MediaPause), '', self)
-        actions.pause.triggered.connect(self._media_object.pause)
-        actions.pause.setEnabled(False)
+#         actions.pause = QtWidgets.QAction(
+#             style.standardIcon(QtWidgets.QStyle.SP_MediaPause), '', self)
+#         actions.pause.triggered.connect(self._media_object.pause)
+#         actions.pause.setEnabled(False)
 
-        actions.stop = QtGui.QAction(
-            style.standardIcon(QtGui.QStyle.SP_MediaStop), '', self)
-        actions.stop.triggered.connect(self._media_object.stop)
-        actions.stop.setEnabled(False)
+#         actions.stop = QtWidgets.QAction(
+#             style.standardIcon(QtWidgets.QStyle.SP_MediaStop), '', self)
+#         actions.stop.triggered.connect(self._media_object.stop)
+#         actions.stop.setEnabled(False)
 
-        return actions
+#         return actions
 
-    def _create_actions_bar(self):
-        widget = QtGui.QMenuBar(self)
-        widget.addAction(self._actions.play)
-        widget.addAction(self._actions.pause)
-        widget.addAction(self._actions.stop)
-        return widget
+#     def _create_actions_bar(self):
+#         widget = QtWidgets.QMenuBar(self)
+#         widget.addAction(self._actions.play)
+#         widget.addAction(self._actions.pause)
+#         widget.addAction(self._actions.stop)
+#         return widget
 
-    def on_media_object_tick(self, time):
-        time = QtCore.QTime(0, (time / 60000) % 60, (time / 1000) % 60)
-        self._time.setText(time.toString('mm:ss'))
+#     def on_media_object_tick(self, time):
+#         time = QtCore.QTime(0, (time / 60000) % 60, (time / 1000) % 60)
+#         self._time.setText(time.toString('mm:ss'))
 
-    def set_music_file(self, audio_file):
-        self._audio_file = audio_file
-        if os.path.exists(self._audio_file.path):
-            self._actions.play.setEnabled(True)
+#     def set_music_file(self, audio_file):
+#         self._audio_file = audio_file
+#         if os.path.exists(self._audio_file.path):
+#             self._actions.play.setEnabled(True)
 
-    def on_play(self):
-        current_source_path = os.path.normpath(
-            self._media_object.currentSource().fileName())
-        if current_source_path == self._audio_file.path:
-            self._media_object.play()
-        else:
-            self._media_object.setCurrentSource(
-                Phonon.MediaSource(self._audio_file.path))
-            self._media_object.play()
-        self._actions.stop.setEnabled(True)
-        self._actions.pause.setEnabled(True)
+#     def on_play(self):
+#         current_source_path = os.path.normpath(
+#             self._media_object.currentSource().fileName())
+#         if current_source_path == self._audio_file.path:
+#             self._media_object.play()
+#         else:
+#             self._media_object.setCurrentSource(
+#                 Phonon.MediaSource(self._audio_file.path))
+#             self._media_object.play()
+#         self._actions.stop.setEnabled(True)
+#         self._actions.pause.setEnabled(True)
 
-    def on_media_object_stateChanged(self, new_state, _):
-        if new_state == Phonon.ErrorState:
-            if self._media_object.errorType() == Phonon.FatalError:
-                QtGui.QMessageBox.warning(self, self.tr("Fatal Error"),
-                                          self.mediaObject.errorString())
-            else:
-                QtGui.QMessageBox.warning(self, self.tr("Error"),
-                                          self.mediaObject.errorString())
+#     def on_media_object_stateChanged(self, new_state, _):
+#         if new_state == Phonon.ErrorState:
+#             if self._media_object.errorType() == Phonon.FatalError:
+#                 QtWidgets.QMessageBox.warning(self, self.tr("Fatal Error"),
+#                                           self.mediaObject.errorString())
+#             else:
+#                 QtWidgets.QMessageBox.warning(self, self.tr("Error"),
+#                                           self.mediaObject.errorString())
 
-        elif new_state == Phonon.PlayingState:
-            self._actions.play.setEnabled(False)
-            self._actions.pause.setEnabled(True)
-            self._actions.stop.setEnabled(True)
+#         elif new_state == Phonon.PlayingState:
+#             self._actions.play.setEnabled(False)
+#             self._actions.pause.setEnabled(True)
+#             self._actions.stop.setEnabled(True)
 
-        elif new_state == Phonon.StoppedState:
-            self._actions.play.setEnabled(True)
-            self._actions.pause.setEnabled(False)
-            self._actions.stop.setEnabled(False)
-            self._time.setText("00:00")
+#         elif new_state == Phonon.StoppedState:
+#             self._actions.play.setEnabled(True)
+#             self._actions.pause.setEnabled(False)
+#             self._actions.stop.setEnabled(False)
+#             self._time.setText("00:00")
 
-        elif new_state == Phonon.PausedState:
-            self._actions.play.setEnabled(True)
-            self._actions.pause.setEnabled(False)
-            self._actions.stop.setEnabled(True)
+#         elif new_state == Phonon.PausedState:
+#             self._actions.play.setEnabled(True)
+#             self._actions.pause.setEnabled(False)
+#             self._actions.stop.setEnabled(True)
 
 
-class PrintablesImportFileView(QtGui.QGroupBox):
+class PrintablesImportFileView(QtWidgets.QGroupBox):
 
     def __init__(self, path, parent=None):
         super(PrintablesImportFileView, self).__init__(parent)
@@ -186,28 +186,28 @@ class PrintablesImportFileView(QtGui.QGroupBox):
         self.setTitle(os.path.basename(self._file))
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
     def initUI(self):
-        self._layout = QtGui.QHBoxLayout(self)
-        self._layout.setSizeConstraint(QtGui.QLayout.SetMaximumSize)
+        self._layout = QtWidgets.QHBoxLayout(self)
+        self._layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self._combobox = self._create_combobox()
         self._combobox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._closer = self._create_closer()
 
         self._layout.addWidget(self._combobox)
         self._layout.addWidget(self._closer)
 
     def _create_combobox(self):
-        combo = QtGui.QComboBox()
+        combo = QtWidgets.QComboBox()
         combo.setEditable(True)
         return combo
 
     def _create_closer(self):
         style = self.style()
-        button = QtGui.QPushButton(
-            style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton), '')
+        button = QtWidgets.QPushButton(
+            style.standardIcon(QtWidgets.QStyle.SP_TitleBarCloseButton), '')
         button.setFixedSize(20, 20)
         button.clicked.connect(self.close)
         return button
@@ -224,19 +224,19 @@ class PrintablesImportFileView(QtGui.QGroupBox):
         return self._file
 
 
-class EditLineWithPathSelector(QtGui.QWidget):
+class EditLineWithPathSelector(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(EditLineWithPathSelector, self).__init__(parent)
         self.initUI()
 
     def initUI(self):
-        self._layout = QtGui.QHBoxLayout(self)
+        self._layout = QtWidgets.QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
 
-        self._path = QtGui.QLineEdit()
+        self._path = QtWidgets.QLineEdit()
         self._path.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
 
         self._open = self._create_open()
 
@@ -245,13 +245,13 @@ class EditLineWithPathSelector(QtGui.QWidget):
 
     def _create_open(self):
         style = self.style()
-        open = QtGui.QPushButton(style.standardIcon(style.SP_DirOpenIcon), '')
+        open = QtWidgets.QPushButton(style.standardIcon(style.SP_DirOpenIcon), '')
         open.setFixedSize(22, 22)
         open.clicked.connect(self.on_open_clicked)
         return open
 
     def on_open_clicked(self):
-        path = QtGui.QFileDialog.getOpenFileName(
+        path = QtWidgets.QFileDialog.getOpenFileName(
             parent=self, caption='pick a program', directory='c:', filter='*.exe')
         return self.set_text(path)
 
@@ -259,7 +259,7 @@ class EditLineWithPathSelector(QtGui.QWidget):
         self._path.setText(text)
 
 
-class FitlersView(QtGui.QWidget):
+class FitlersView(QtWidgets.QWidget):
     filtersChanged = QtCore.pyqtSignal(list)
     isOpened = QtCore.pyqtSignal()
 
@@ -272,37 +272,37 @@ class FitlersView(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setSizePolicy(*[QtGui.QSizePolicy.Minimum] * 2)
+        self.setSizePolicy(*[QtWidgets.QSizePolicy.Minimum] * 2)
         self.setMinimumWidth(250)
         self._filter_widget = None
 
-        self._button = QtGui.QPushButton(self._caption + '  v')
+        self._button = QtWidgets.QPushButton(self._caption + '  v')
         self._button.setCheckable(True)
         self._button.toggled.connect(self.on_button_toggled)
 
         self._label = self._create_label()
         self._scroll_area = self._create_scroll_area()
 
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setSpacing(3)
         self._layout.setContentsMargins(0, 0, 0, 0)
         self._layout.addWidget(self._button)
         self._layout.addWidget(self._scroll_area)
 
     def _create_label(self):
-        label = QtGui.QLabel()
+        label = QtWidgets.QLabel()
         label.setContentsMargins(5, 5, 5, 5)
         label.setAlignment(QtCore.Qt.AlignTop)
         return label
 
     def _create_scroll_area(self):
-        scroll_area = QtGui.QScrollArea()
+        scroll_area = QtWidgets.QScrollArea()
         scroll_area.setWidget(self._label)
         scroll_area.setWidgetResizable(True)
         scroll_area.setMinimumHeight(25)
         scroll_area.setMaximumHeight(250)
         scroll_area.setSizePolicy(
-            QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Expanding)
         scroll_area.hide()
         return scroll_area
 
@@ -360,7 +360,7 @@ class FitlersView(QtGui.QWidget):
         return self._filters
 
 
-class FitlersSelector(QtGui.QWidget):
+class FitlersSelector(QtWidgets.QWidget):
     filtersChanged = QtCore.pyqtSignal(list)
     closeAsked = QtCore.pyqtSignal()
 
@@ -378,27 +378,27 @@ class FitlersSelector(QtGui.QWidget):
         self.installEventFilter(self)
         self._widgets = self._create_widgets()
 
-        self._check_all = QtGui.QPushButton(text.SELECT_ALL)
+        self._check_all = QtWidgets.QPushButton(text.SELECT_ALL)
         self._check_all.clicked.connect(partial(self.check_all, 2))
         self._check_all.setFocusPolicy(QtCore.Qt.NoFocus)
-        self._check_none = QtGui.QPushButton(text.SELECT_NONE)
+        self._check_none = QtWidgets.QPushButton(text.SELECT_NONE)
         self._check_none.clicked.connect(partial(self.check_all, 0))
         self._check_none.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self._upper_layout = self._create_upper_layout()
 
-        self._scroll_widget = QtGui.QWidget()
+        self._scroll_widget = QtWidgets.QWidget()
         self._scroll_area = self._create_scroll_area()
-        self._scroll_layout = QtGui.QVBoxLayout(self._scroll_widget)
+        self._scroll_layout = QtWidgets.QVBoxLayout(self._scroll_widget)
         self._scroll_layout.setContentsMargins(0, 0, 0, 0)
         self._fill_scroll_layout()
 
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.addLayout(self._upper_layout)
         self._layout.addWidget(self._scroll_area)
 
     def _create_scroll_area(self):
-        scroll = QtGui.QScrollArea()
+        scroll = QtWidgets.QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.horizontalScrollBar().hide()
         scroll.setWidget(self._scroll_widget)
@@ -408,7 +408,7 @@ class FitlersSelector(QtGui.QWidget):
     def _create_widgets(self):
         widgets = []
         for data in self._datas:
-            widget = QtGui.QCheckBox(data)
+            widget = QtWidgets.QCheckBox(data)
             if data in self._filters:
                 widget.setCheckState(2)
             widget.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -421,7 +421,7 @@ class FitlersSelector(QtGui.QWidget):
             self._scroll_layout.addWidget(widget)
 
     def _create_upper_layout(self):
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         layout.addWidget(self._check_all)
@@ -441,4 +441,4 @@ class FitlersSelector(QtGui.QWidget):
 
     def focusOutEvent(self, _):
         self.closeAsked.emit()
-        return QtGui.QWidget.focusOutEvent(self, _)
+        return QtWidgets.QWidget.focusOutEvent(self, _)

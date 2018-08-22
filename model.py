@@ -5,12 +5,12 @@ from Pizzicato.functions import (
     get_number_of_piece_from_path, get_music_files_from_piece,
     get_printable_files_from_piece, get_editable_files_from_piece,
     rename_piece, rename_printable_file)
+from Pizzicato.strings import unCamelCase
 
 import os
 import pickle
 import json
-from PyQt4.QtCore import QObject
-from StringOprations import unCamelCase
+from PyQt5.QtCore import QObject
 
 ROOT = os.path.dirname(__file__)
 

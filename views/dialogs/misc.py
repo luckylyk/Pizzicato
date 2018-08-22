@@ -2,12 +2,12 @@ from Pizzicato.views.utils import PrintablesImportFileView
 from Pizzicato.controllers import PizzicatoController
 from Pizzicato import text
 
-from PyQt4 import QtGui, QtCore
-from StringOperations import find_closer_string_in_list
+from PyQt5 import QtWidgets, QtCore
+from Pizzicato.strings import find_closer_string_in_list
 import os
 
 
-class ImportPrintablesFiles(QtGui.QWidget):
+class ImportPrintablesFiles(QtWidgets.QWidget):
 
     def __init__(self, files, piece, parent):
         super(ImportPrintablesFiles, self).__init__(parent, QtCore.Qt.Window)
@@ -22,7 +22,7 @@ class ImportPrintablesFiles(QtGui.QWidget):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
     def initUI(self):
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._printables = self._create_printable_widgets()
         self._scroll_area = self._create_scroll_area()
         self._buttons_layout = self._create_buttons_layout()
@@ -44,28 +44,28 @@ class ImportPrintablesFiles(QtGui.QWidget):
         return widgets
 
     def _create_scroll_area(self):
-        widget = QtGui.QWidget()
+        widget = QtWidgets.QWidget()
         widget.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        layout = QtGui.QVBoxLayout(widget)
-        layout.setSizeConstraint(QtGui.QLayout.SetMaximumSize)
+        layout = QtWidgets.QVBoxLayout(widget)
+        layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         for printable in self._printables:
             layout.addWidget(printable)
         layout.addStretch(1)
 
-        scroll_area = QtGui.QScrollArea()
+        scroll_area = QtWidgets.QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(widget)
         return scroll_area
 
     def _create_buttons_layout(self):
-        accept = QtGui.QPushButton(text.IMPORT)
+        accept = QtWidgets.QPushButton(text.IMPORT)
         accept.clicked.connect(self.on_accept_clicked)
-        cancel = QtGui.QPushButton(text.CANCEL)
+        cancel = QtWidgets.QPushButton(text.CANCEL)
         cancel.clicked.connect(self.close)
 
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.addStretch(1)
         layout.addWidget(accept)
         layout.addWidget(cancel)
@@ -79,7 +79,7 @@ class ImportPrintablesFiles(QtGui.QWidget):
         self.close()
 
 
-class AboutBoxView(QtGui.QWidget):
+class AboutBoxView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent, QtCore.Qt.Window)

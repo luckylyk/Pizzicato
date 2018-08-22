@@ -7,7 +7,7 @@ from Pizzicato.views.dialogs import (
     ImportPrintablesFiles, PreferencesEditor,
     PrintablesMerger, AudioZipper)
 from Pizzicato.views.utils import (
-    LineEditAsLabel, SoundReader, FloatEditLineView,
+    LineEditAsLabel, FloatEditLineView,
     warning, PrintablesImportFileView)
 from Pizzicato.views.menus import MainMenuBar, FilesViewContextMenu
 from Pizzicato.views.tables import (
@@ -15,12 +15,12 @@ from Pizzicato.views.tables import (
     FilesTableView, FilesAbstractTableModel, WipFilesTableView,
     AudioFilesTableModel)
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 from functools import partial
 import os
 
 
-class PiecesViewWidget(QtGui.QWidget):
+class PiecesViewWidget(QtWidgets.QWidget):
     pieceSelected = QtCore.pyqtSignal(Piece)
     bandSelected = QtCore.pyqtSignal(Band)
 
@@ -60,16 +60,16 @@ class PiecesViewWidget(QtGui.QWidget):
         self.setContentsMargins(0, 0, 0, 0)
 
     def _create_band_actions_bar(self):
-        bar = QtGui.QMenuBar(self)
+        bar = QtWidgets.QMenuBar(self)
         bar.addAction(self._actions['create band'])
         bar.addAction(self._actions['rename band'])
         bar.addAction(self._actions['delete band'])
-        bar.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        bar.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         return bar
 
     def _create_piece_list_view_widget(self):
-        widget = QtGui.QWidget(self)
-        layout = QtGui.QVBoxLayout(widget)
+        widget = QtWidgets.QWidget(self)
+        layout = QtWidgets.QVBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         layout.addWidget(self._piece_list_view)
@@ -79,62 +79,62 @@ class PiecesViewWidget(QtGui.QWidget):
     def _create_actions(self):
         actions = {}
 
-        actions['create piece'] = QtGui.QAction(
-            self.style().standardIcon(QtGui.QStyle.SP_FileIcon), '', self)
+        actions['create piece'] = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon), '', self)
         actions['create piece'].triggered.connect(self.on_new_triggered)
         actions['create piece'].setShortcut(QtGui.QKeySequence.New)
 
-        actions['delete piece'] = QtGui.QAction(
-            self.style().standardIcon(QtGui.QStyle.SP_TrashIcon), '', self)
+        actions['delete piece'] = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_TrashIcon), '', self)
         actions['delete piece'].triggered.connect(
             self.on_piece_deleted_triggered)
         actions['delete piece'].setShortcut(QtGui.QKeySequence.Delete)
 
-        actions['open piece in explorer'] = QtGui.QAction(
-            self.style().standardIcon(QtGui.QStyle.SP_DirOpenIcon), '', self)
+        actions['open piece in explorer'] = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_DirOpenIcon), '', self)
         actions['open piece in explorer'].triggered.connect(
             self.on_open_piece_in_explorer_triggered)
         actions['open piece in explorer'].setShortcut(QtGui.QKeySequence.Open)
 
-        actions['create band'] = QtGui.QAction(
-            self.style().standardIcon(QtGui.QStyle.SP_FileIcon), '', self)
+        actions['create band'] = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon), '', self)
         actions['create band'].triggered.connect(
             self.on_open_add_band_triggered)
 
-        actions['rename band'] = QtGui.QAction(icons.rename, '', self)
+        actions['rename band'] = QtWidgets.QAction(icons.rename, '', self)
         actions['rename band'].triggered.connect(
             self.on_open_rename_band_triggered)
 
-        actions['delete band'] = QtGui.QAction(
-            self.style().standardIcon(QtGui.QStyle.SP_TrashIcon), '', self)
+        actions['delete band'] = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_TrashIcon), '', self)
         actions['delete band'].triggered.connect(
             self.on_open_delete_band_triggered)
 
         return actions
 
     def _piece_list_create_actions_bar(self):
-        bar = QtGui.QMenuBar(self)
+        bar = QtWidgets.QMenuBar(self)
         bar.addAction(self._actions['create piece'])
         bar.addAction(self._actions['open piece in explorer'])
         bar.addAction(self._actions['delete piece'])
         return bar
 
     def _create_tab_lists(self):
-        tab = QtGui.QTabWidget(self)
+        tab = QtWidgets.QTabWidget(self)
         tab.addTab(self._piece_list_view_widget, text.FINALS)
         tab.addTab(self._band_wip_list, text.WORK_IN_PROGRESS)
         return tab
 
     def _create_group_bands(self):
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self._bands_combo)
         layout.addWidget(self._bands_actions_bar)
-        group = QtGui.QGroupBox(text.SELECT_BAND)
+        group = QtWidgets.QGroupBox(text.SELECT_BAND)
         group.setLayout(layout)
         return group
 
     def _create_layout(self):
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self._group_band)
         layout.addWidget(self._tab_lists)
@@ -178,7 +178,7 @@ class PiecesViewWidget(QtGui.QWidget):
 
     def on_piece_deleted_triggered(self):
         msg = warning(text.DELETE_WARNING, question=True)
-        if msg == QtGui.QMessageBox.Cancel:
+        if msg == QtWidgets.QMessageBox.Cancel:
             return
         PizzicatoController.remove_piece(self.get_current_selected_piece())
 
@@ -214,13 +214,13 @@ class PiecesViewWidget(QtGui.QWidget):
 
     def on_open_delete_band_triggered(self):
         msg = warning(text.DELETE_WARNING, question=True)
-        if msg == QtGui.QMessageBox.Cancel:
+        if msg == QtWidgets.QMessageBox.Cancel:
             return
         PizzicatoController.remove_band(self.get_current_band())
 
 
 #  Refactorise a bit
-class PiecePropertiesView(QtGui.QWidget):
+class PiecePropertiesView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(PiecePropertiesView, self).__init__(parent)
@@ -230,7 +230,7 @@ class PiecePropertiesView(QtGui.QWidget):
 
     def initUI(self):
         self._set_settings()
-        self._title = QtGui.QLabel(self._get_title_label())
+        self._title = QtWidgets.QLabel(self._get_title_label())
         self._infos_group = self._create_infos_group()
 
         self._layout = self._create_layout(self)
@@ -243,7 +243,7 @@ class PiecePropertiesView(QtGui.QWidget):
         return '<div align="center"><h1><strong>{}</strong></h1>'.format(title)
 
     def _create_infos_group(self):
-        group = QtGui.QGroupBox(text.PIECE_INFOS)
+        group = QtWidgets.QGroupBox(text.PIECE_INFOS)
 
         group.author = LineEditAsLabel('', parent=self)
         group.author.textEdited.connect(self.on_properties_edited)
@@ -253,10 +253,10 @@ class PiecePropertiesView(QtGui.QWidget):
         group.style.textEdited.connect(self.on_properties_edited)
         group.solists = LineEditAsLabel('', parent=self)
         group.solists.textEdited.connect(self.on_properties_edited)
-        group.comment = QtGui.QTextEdit(parent=self)
+        group.comment = QtWidgets.QTextEdit(parent=self)
         group.comment.textChanged.connect(self.on_properties_edited)
 
-        layout_up = QtGui.QFormLayout()
+        layout_up = QtWidgets.QFormLayout()
         layout_up.addRow(self._title)
         layout_up.addRow(text.AUTHOR + ' :', group.author)
         layout_up.addRow(text.ARRANGER + ' :', group.arranger)
@@ -271,25 +271,25 @@ class PiecePropertiesView(QtGui.QWidget):
         group.priority = self._create_combo_box(PizzicatoEnums.PRIORITY)
         group.priority.currentIndexChanged.connect(self.on_properties_edited)
 
-        layout_mid = QtGui.QHBoxLayout()
-        layout_mid.addWidget(QtGui.QLabel(text.TEMPO + ' :'))
+        layout_mid = QtWidgets.QHBoxLayout()
+        layout_mid.addWidget(QtWidgets.QLabel(text.TEMPO + ' :'))
         layout_mid.addWidget(group.tempi)
         layout_mid.addStretch(1)
-        layout_mid.addWidget(QtGui.QLabel(text.MOOD + ' :'))
+        layout_mid.addWidget(QtWidgets.QLabel(text.MOOD + ' :'))
         layout_mid.addWidget(group.mood)
         layout_mid.addStretch(1)
-        layout_mid.addWidget(QtGui.QLabel(text.PRIORITY + ' :'))
+        layout_mid.addWidget(QtWidgets.QLabel(text.PRIORITY + ' :'))
         layout_mid.addWidget(group.priority)
 
-        group.save = QtGui.QPushButton(text.SAVE)
+        group.save = QtWidgets.QPushButton(text.SAVE)
         group.save.setEnabled(False)
         group.save.clicked.connect(self.on_save_clicked)
 
-        layout_down = QtGui.QHBoxLayout()
+        layout_down = QtWidgets.QHBoxLayout()
         layout_down.addStretch(1)
         layout_down.addWidget(group.save)
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(layout_up)
         layout.addLayout(layout_mid)
         layout.addLayout(layout_down)
@@ -302,12 +302,12 @@ class PiecePropertiesView(QtGui.QWidget):
             self.setEnabled(False)
 
     def _create_layout(self, parent):
-        layout = QtGui.QVBoxLayout(parent)
+        layout = QtWidgets.QVBoxLayout(parent)
         layout.setContentsMargins(0, 0, 0, 0)
         return layout
 
     def _create_combo_box(self, items):
-        combobox = QtGui.QComboBox()
+        combobox = QtWidgets.QComboBox()
         combobox.addItems(items)
         return combobox
 
@@ -357,7 +357,7 @@ class PiecePropertiesView(QtGui.QWidget):
         self._infos_group.save.setEnabled(False)
 
 
-class PrintableFilesView(QtGui.QWidget):
+class PrintableFilesView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(PrintableFilesView, self).__init__(parent)
@@ -365,7 +365,7 @@ class PrintableFilesView(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
 
         self._printable_files_model = FilesAbstractTableModel(
@@ -395,7 +395,7 @@ class PrintableFilesView(QtGui.QWidget):
         dialog.show()
 
 
-class AudioFilesView(QtGui.QWidget):
+class AudioFilesView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(AudioFilesView, self).__init__(parent)
@@ -403,7 +403,7 @@ class AudioFilesView(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
 
         self._audio_files_model = AudioFilesTableModel(
@@ -417,18 +417,18 @@ class AudioFilesView(QtGui.QWidget):
             parent=self,
             menu=FilesViewContextMenu(self))
         self._audio_files_table.droppedFiles.connect(self.on_dropped_files)
-        self._sound_reader = SoundReader()
+        # self._sound_reader = SoundReader()
         self._audio_files_table.selectionIsChanged.connect(
             self._selectionChanged)
         self._audio_files_table.set_filters(
             PizzicatoPreferences.AUDIOS_SUPPORTED_EXTENSIONS)
 
         self._layout.addWidget(self._audio_files_table)
-        self._layout.addWidget(self._sound_reader)
+        # self._layout.addWidget(self._sound_reader)
 
     def _selectionChanged(self):
         data = self._audio_files_table.get_selected_data()
-        self._sound_reader.set_music_file(data)
+        # self._sound_reader.set_music_file(data)
 
     def set_piece(self, piece):
         self._piece = piece
@@ -440,7 +440,7 @@ class AudioFilesView(QtGui.QWidget):
         self.set_piece(self._piece)
 
 
-class EditableFilesView(QtGui.QWidget):
+class EditableFilesView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(EditableFilesView, self).__init__(parent)
@@ -448,7 +448,7 @@ class EditableFilesView(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
 
         self._editable_files_model = FilesAbstractTableModel(

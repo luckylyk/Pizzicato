@@ -5,10 +5,10 @@ from Pizzicato.views.widgets import (
     PrintableFilesView, AudioFilesView, MainMenuBar)
 from Pizzicato.views.dialogs import PreferencesEditor
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtWidgets, QtCore
 
 
-class MainView(QtGui.QWidget):
+class MainView(QtWidgets.QWidget):
 
     def __init__(self, context, parent=None):
         super(MainView, self).__init__(parent)
@@ -24,19 +24,19 @@ class MainView(QtGui.QWidget):
         self._middle_widget = self._create_middle_widget()
         self._connect_widgets()
 
-        self._splitter = QtGui.QSplitter()
+        self._splitter = QtWidgets.QSplitter()
         self._splitter.addWidget(self._left_widget)
         self._splitter.addWidget(self._middle_widget)
 
-        self._main_layout = QtGui.QVBoxLayout(self)
+        self._main_layout = QtWidgets.QVBoxLayout(self)
         self._main_layout.addWidget(self._splitter)
         self._main_layout.addWidget(self._main_menu_bar)
 
     def _create_middle_widget(self):
-        widget = QtGui.QSplitter(QtCore.Qt.Vertical)
+        widget = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         widget.piece_properties_view = PiecePropertiesView(self)
 
-        widget.splitter_files = QtGui.QSplitter(QtCore.Qt.Vertical)
+        widget.splitter_files = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         widget.editables_files_view = EditableFilesView(self)
         widget.music_files_view = AudioFilesView(self)
         widget.splitter_files.addWidget(widget.editables_files_view)
@@ -44,7 +44,7 @@ class MainView(QtGui.QWidget):
 
         widget.printable_files_view = PrintableFilesView(self)
 
-        widget.tab = QtGui.QTabWidget(self)
+        widget.tab = QtWidgets.QTabWidget(self)
         widget.tab.addTab(widget.splitter_files, text.EDITABLES_AND_AUDIOS)
         widget.tab.addTab(widget.printable_files_view, text.PRINTABLES)
 

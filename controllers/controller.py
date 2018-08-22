@@ -6,7 +6,7 @@ from Pizzicato.functions import (
     create_printable_file, combine_audio_files_to_zip,
     combine_printables_to_pdf, rename_band)
 from Pizzicato.model import PrintableFile
-from StringOprations import reCamelCase
+from Pizzicato.strings import reCamelCase
 from Pizzicato.preferences import PizzicatoPreferences
 from Pizzicato.views.utils import warning
 import shutil

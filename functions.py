@@ -1,7 +1,7 @@
 from Pizzicato.preferences import PizzicatoPreferences, PizzicatoEnums
 
 from subprocess import Popen
-from StringOprations import reCamelCase
+from Pizzicato.strings import reCamelCase
 from PyPDF2 import PdfFileMerger
 from zipfile import ZipFile, ZIP_DEFLATED
 

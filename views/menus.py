@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from Pizzicato.preferences import PizzicatoPreferences, PizzicatoEnums, icons
 from Pizzicato.model import Piece, AudioFile, Band
 from Pizzicato.functions import open_folder_in_explorer, start_file
@@ -10,7 +10,7 @@ import os
 from functools import partial
 
 
-class FilesViewContextMenu(QtGui.QMenu):
+class FilesViewContextMenu(QtWidgets.QMenu):
 
     def __init__(self, parent=None):
         super(FilesViewContextMenu, self).__init__(parent)
@@ -32,29 +32,29 @@ class FilesViewContextMenu(QtGui.QMenu):
 
     def _get_actions(self):
         style = self.style()
-        _open = QtGui.QAction('open', self)
-        _open.setIcon(style.standardIcon(QtGui.QStyle.SP_DialogOpenButton))
+        _open = QtWidgets.QAction('open', self)
+        _open.setIcon(style.standardIcon(QtWidgets.QStyle.SP_DialogOpenButton))
         _open.triggered.connect(self.on_open_triggered)
 
-        _open_folder = QtGui.QAction('open folder', self)
+        _open_folder = QtWidgets.QAction('open folder', self)
         _open_folder.setIcon(
-            style.standardIcon(QtGui.QStyle.SP_DialogOpenButton))
+            style.standardIcon(QtWidgets.QStyle.SP_DialogOpenButton))
         _open_folder.triggered.connect(self.on_open_folder_triggered)
 
-        _delete = QtGui.QAction('delete', self)
+        _delete = QtWidgets.QAction('delete', self)
 
         return _open, _open_folder, _delete
 
     def _create_music_type_menu(self):
 
-        menu = QtGui.QMenu('Change Type', self)
-        menu.original = QtGui.QAction('Original', self)
+        menu = QtWidgets.QMenu('Change Type', self)
+        menu.original = QtWidgets.QAction('Original', self)
         menu.original.triggered.connect(
             partial(self.on_music_type_changed, 'original'))
-        menu.maquette = QtGui.QAction('Maquette', self)
+        menu.maquette = QtWidgets.QAction('Maquette', self)
         menu.maquette.triggered.connect(
             partial(self.on_music_type_changed, 'maquette'))
-        menu.divers = QtGui.QAction('Divers', self)
+        menu.divers = QtWidgets.QAction('Divers', self)
         menu.divers.triggered.connect(
             partial(self.on_music_type_changed, 'divers'))
         menu.addActions([menu.original, menu.maquette, menu.divers])
@@ -71,7 +71,7 @@ class FilesViewContextMenu(QtGui.QMenu):
             self._file, file_categorie)
 
 
-class MainMenuBar(QtGui.QWidget):
+class MainMenuBar(QtWidgets.QWidget):
     BUTTON_SIZE = QtCore.QSize(50, 50)
 
     def __init__(self, parent=None):
@@ -88,7 +88,7 @@ class MainMenuBar(QtGui.QWidget):
         self._about = self._create_button(
             icons.about, self.on_about_clicked)
 
-        self._layout = QtGui.QHBoxLayout(self)
+        self._layout = QtWidgets.QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
         self._fill_layout()
 
@@ -100,7 +100,7 @@ class MainMenuBar(QtGui.QWidget):
         self._layout.addStretch(1)
 
     def _create_button(self, icon, function):
-        button = QtGui.QPushButton(icon, '')
+        button = QtWidgets.QPushButton(icon, '')
         button.clicked.connect(function)
         button.setFlat(True)
         button.resize(self.BUTTON_SIZE)

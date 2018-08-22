@@ -1,3 +1,10 @@
+import sys
+import os
+
+_current_dir = os.path.dirname(os.path.realpath(__file__))
+APP_FOLDER = os.path.dirname(_current_dir)
+sys.path.insert(0, APP_FOLDER)
+sys.path.insert(0, os.path.join(APP_FOLDER, 'PyQt'))
 
 
 # load preferences
@@ -14,12 +21,11 @@ PizzicatoController.set_context(context)
 from Pizzicato.views.main import MainView
 
 # external import
-from PyQt4 import QtGui
-import sys
+from PyQt5 import QtWidgets
 
 
 def main():
-    my_application = QtGui.QApplication(sys.argv)
+    my_application = QtWidgets.QApplication(sys.argv)
     main_window = MainView(context, parent=None)
     main_window.show()
     my_application.setStyle('Plastique')

@@ -3,7 +3,7 @@ from Pizzicato.functions import get_index_for_insertion_in_sorted_list
 from Pizzicato.extentions import FilesExtention
 from Pizzicato import text
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 import os
 
 
@@ -68,10 +68,10 @@ class BandsTableModel(QtCore.QAbstractTableModel):
                 return font
 
 
-class BandsTableView(QtGui.QTableView):
+class BandsTableView(QtWidgets.QTableView):
 
     def __init__(self, model, parent=None):
-        super(BandsTableModel, self).__init__(parent)
+        super(BandsTableView, self).__init__(parent)
         self._model = model
         self.initUI()
 
@@ -80,16 +80,16 @@ class BandsTableView(QtGui.QTableView):
         self.setModel(self._model)
 
     def _configure(self):
-        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.horizontalHeader().hide()
         self.verticalHeader().hide()
         self.setShowGrid(False)
         self.setWordWrap(True)
 
 
-class BandsComboBoxView(QtGui.QComboBox):
+class BandsComboBoxView(QtWidgets.QComboBox):
 
     def __init__(self, model, parent=None):
         super(BandsComboBoxView, self).__init__(parent)
@@ -104,7 +104,7 @@ class BandsComboBoxView(QtGui.QComboBox):
         PizzicatoController.bands_combo_view = self
         self.setEditable(False)
         self.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
     def get_current_band(self):
         return self._model.get_band(self.currentIndex())
@@ -185,7 +185,7 @@ class PieceListModel(QtCore.QAbstractListModel):
         return True
 
 
-class PieceListView(QtGui.QListView):
+class PieceListView(QtWidgets.QListView):
 
     def __init__(self, model, parent=None):
         super(PieceListView, self).__init__(parent)
@@ -197,8 +197,8 @@ class PieceListView(QtGui.QListView):
         self.setModel(self._model)
 
     def _configure(self):
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
 
 
 class FilesAbstractTableModel(QtCore.QAbstractTableModel):
@@ -217,7 +217,7 @@ class FilesAbstractTableModel(QtCore.QAbstractTableModel):
         return len(self._columns)
 
     def clear(self):
-        return self.reset()
+        return self.resetInternalData()
 
     def get_data(self, index):
         return self._datas[index]
@@ -264,7 +264,7 @@ class AudioFilesTableModel(FilesAbstractTableModel):
     def flags(self, index):
         if index.column() == 1:
             return QtCore.Qt.ItemFlags(
-                QtCore.QAbstractListModel.flags(self, index) |
+                super().flags(index) |
                 QtCore.Qt.ItemIsEditable)
         else:
             return super(AudioFilesTableModel, self).flags(index)
@@ -282,7 +282,7 @@ class AudioFilesTableModel(FilesAbstractTableModel):
             return FilesAbstractTableModel.data(self, index, role)
 
 
-class FilesTableView(QtGui.QTableView):
+class FilesTableView(QtWidgets.QTableView):
     selectionIsChanged = QtCore.pyqtSignal()
     droppedFiles = QtCore.pyqtSignal(list)
 
@@ -302,17 +302,17 @@ class FilesTableView(QtGui.QTableView):
         self.customContextMenuRequested.connect(self.on_context_menu_requested)
 
     def configure(self):
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
-        self.setHorizontalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.verticalHeader().hide()
-        self.horizontalHeader().setResizeMode(
-            QtGui.QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
         self.horizontalHeader().setStretchLastSection(True)
-        self.verticalHeader().setResizeMode(
-            QtGui.QHeaderView.ResizeToContents)
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.verticalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
         self.setShowGrid(False)
@@ -364,19 +364,19 @@ class FilesTableView(QtGui.QTableView):
         self._menu.exec_(self.mapToGlobal(point))
 
 
-class WipFilesTableView(QtGui.QWidget):
+class WipFilesTableView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(WipFilesTableView, self).__init__(parent)
         self._root = '/'
 
-        self._tree_view = QtGui.QTreeView(self)
-        self._file_system_model = QtGui.QFileSystemModel(self._tree_view)
+        self._tree_view = QtWidgets.QTreeView(self)
+        self._file_system_model = QtWidgets.QFileSystemModel(self._tree_view)
         self._file_system_model.setReadOnly(True)
 
         self._tree_view.setModel(self._file_system_model)
 
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
         self._layout.addWidget(self._tree_view)
 
@@ -385,7 +385,7 @@ class WipFilesTableView(QtGui.QWidget):
         self._tree_view.setRootIndex(root)
 
 
-class ExtentionsTableView(QtGui.QTableView):
+class ExtentionsTableView(QtWidgets.QTableView):
     dataSelected = QtCore.pyqtSignal(FilesExtention)
 
     def __init__(self, parent=None):
@@ -398,17 +398,17 @@ class ExtentionsTableView(QtGui.QTableView):
         self._selection_model = None
 
     def configure(self):
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
-        self.setHorizontalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.verticalHeader().hide()
-        self.horizontalHeader().setResizeMode(
-            QtGui.QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
         self.horizontalHeader().setStretchLastSection(True)
-        self.verticalHeader().setResizeMode(
-            QtGui.QHeaderView.ResizeToContents)
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.verticalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
         self.setShowGrid(False)

@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from functools import partial
 from Pizzicato.controllers import PizzicatoController
 from Pizzicato.preferences import PizzicatoPreferences, PizzicatoEnums
@@ -11,7 +11,7 @@ from Pizzicato import text
 ###############################################################################
 
 
-class AbstractMergerDialog(QtGui.QWidget):
+class AbstractMergerDialog(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(AbstractMergerDialog, self).__init__(parent, QtCore.Qt.Window)
@@ -22,7 +22,7 @@ class AbstractMergerDialog(QtGui.QWidget):
         self._filters_widgets = self.create_filters()
 
         self._filters_layout = self._create_filters_layout()
-        self._filters_group = QtGui.QGroupBox(text.FILTERS)
+        self._filters_group = QtWidgets.QGroupBox(text.FILTERS)
         self._filters_group.setLayout(self._filters_layout)
 
         self._list_model = self.create_list_model()
@@ -30,7 +30,7 @@ class AbstractMergerDialog(QtGui.QWidget):
         self._list_view = MergerListView()
         self._list_view.setModel(self._list_model)
 
-        self._horizontal_layout = QtGui.QSplitter()
+        self._horizontal_layout = QtWidgets.QSplitter()
         self._horizontal_layout.addWidget(self._filters_group)
         self._horizontal_layout.addWidget(self._list_view)
         self._horizontal_layout.setContentsMargins(0, 0, 0, 0)
@@ -38,7 +38,7 @@ class AbstractMergerDialog(QtGui.QWidget):
         self._buttons = self.create_buttons()
         self._buttons_layout = self._create_buttons_layout()
 
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.addWidget(self._horizontal_layout)
         self._layout.addLayout(self._buttons_layout)
 
@@ -61,7 +61,7 @@ class AbstractMergerDialog(QtGui.QWidget):
         raise NotImplementedError(
             'subclass of AbstractMergerDialog need a '
             'create_filters(self) reimplemented')
-        return QtGui.QStandardItemModel()
+        return QtWidgets.QStandardItemModel()
 
     def create_buttons(self):
         '''
@@ -71,10 +71,10 @@ class AbstractMergerDialog(QtGui.QWidget):
         raise NotImplementedError(
             'subclass of AbstractMergerDialog need a '
             'create_buttons(self) reimplemented')
-        return [QtGui.QPushButton()]
+        return [QtWidgets.QPushButton()]
 
     def _create_filters_layout(self):
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
         for filters_widget in self._filters_widgets:
             layout.addWidget(filters_widget)
@@ -82,7 +82,7 @@ class AbstractMergerDialog(QtGui.QWidget):
         return layout
 
     def _create_buttons_layout(self):
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addStretch(1)
         for button in self._buttons:
@@ -135,9 +135,9 @@ class PrintablesMerger(AbstractMergerDialog):
         return model
 
     def create_buttons(self):
-        merge = QtGui.QPushButton(text.MERGE)
+        merge = QtWidgets.QPushButton(text.MERGE)
         merge.clicked.connect(self.on_merge_clicked)
-        cancel = QtGui.QPushButton(text.CANCEL)
+        cancel = QtWidgets.QPushButton(text.CANCEL)
         cancel.clicked.connect(self.close)
         return [merge, cancel]
 
@@ -154,9 +154,9 @@ class PrintablesMerger(AbstractMergerDialog):
         self._update_printables_files()
 
     def on_merge_clicked(self):
-        dst = QtGui.QFileDialog.getSaveFileName(
+        dst = QtWidgets.QFileDialog.getSaveFileName(
             parent=self, caption=text.FILE_DIALOG_SAVE_PDF_FILES,
-            directory='', filter='*.pdf')
+            directory='', filter='*.pdf')[0]
         files = self._list_model.get_selected_datas()
         PizzicatoController.merge_pdf_file(files, dst)
         return self.close()
@@ -211,9 +211,9 @@ class AudioZipper(AbstractMergerDialog):
         return model
 
     def create_buttons(self):
-        zip = QtGui.QPushButton(text.ZIP)
+        zip = QtWidgets.QPushButton(text.ZIP)
         zip.clicked.connect(self.on_zip_clicked)
-        cancel = QtGui.QPushButton(text.CANCEL)
+        cancel = QtWidgets.QPushButton(text.CANCEL)
         cancel.clicked.connect(self.close)
         return [zip, cancel]
 
@@ -227,7 +227,7 @@ class AudioZipper(AbstractMergerDialog):
         self._update_audios_files()
 
     def on_zip_clicked(self):
-        dst = QtGui.QFileDialog.getSaveFileName(
+        dst = QtWidgets.QFileDialog.getSaveFileName(
             parent=self, caption=text.FILE_DIALOG_SAVE_ZIP_FILES,
             directory='', filter='*.zip')
         files = self._list_model.get_selected_datas()
@@ -296,7 +296,7 @@ class MergerAbstractTableModel(QtCore.QAbstractTableModel):
             return flags
 
     def clear(self):
-        return self.reset()
+        return self.resetInternalData()
 
     def setData(self, index=None, value=None, role=QtCore.Qt.EditRole):
         row = index.row()
@@ -402,7 +402,7 @@ class AudiosTableModel(MergerAbstractTableModel):
         self.layoutChanged.emit()
 
 
-class MergerListView(QtGui.QWidget):
+class MergerListView(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(MergerListView, self).__init__(parent)
@@ -411,37 +411,37 @@ class MergerListView(QtGui.QWidget):
     def initUI(self):
         self._table_view = self._create_table_view()
 
-        self._check_all = QtGui.QPushButton(text.SELECT_ALL)
+        self._check_all = QtWidgets.QPushButton(text.SELECT_ALL)
         self._check_all.clicked.connect(
             partial(self.on_check, QtCore.Qt.Checked))
-        self._check_none = QtGui.QPushButton(text.SELECT_NONE)
+        self._check_none = QtWidgets.QPushButton(text.SELECT_NONE)
         self._check_none.clicked.connect(
             partial(self.on_check, QtCore.Qt.Unchecked))
 
-        self._buttons_h_layout = QtGui.QHBoxLayout()
+        self._buttons_h_layout = QtWidgets.QHBoxLayout()
         self._buttons_h_layout.addWidget(self._check_all)
         self._buttons_h_layout.addWidget(self._check_none)
 
-        self._layout = QtGui.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.addWidget(self._table_view)
         self._layout.addLayout(self._buttons_h_layout)
         self._layout.setContentsMargins(0, 0, 0, 0)
 
     def _create_table_view(self):
-        table = QtGui.QTableView()
-        table.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        table = QtWidgets.QTableView()
+        table.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         table.verticalHeader().hide()
         table.horizontalHeader().hide()
         table.horizontalHeader().setStretchLastSection(True)
-        table.verticalHeader().setResizeMode(
-            QtGui.QHeaderView.ResizeToContents)
-        table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        table.verticalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
+        table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         table.setDragEnabled(True)
         table.setDropIndicatorShown(True)
         table.setShowGrid(False)
         table.setWordWrap(False)
         table.setSortingEnabled(True)
-        table.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        table.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         return table
 
     def get_selected_indexes(self):
@@ -453,7 +453,7 @@ class MergerListView(QtGui.QWidget):
         model = self._table_view.model()
         for index in indexes:
             index = model.index(index.row(), 0, QtCore.QModelIndex())
-            selection_model.select(index, QtGui.QItemSelectionModel.Select)
+            selection_model.select(index, QtWidgets.QItemSelectionModel.Select)
 
     def setModel(self, model):
         self._table_view.setModel(model)
@@ -468,7 +468,7 @@ class MergerListView(QtGui.QWidget):
         model = self._table_view.model()
         if model.rowCount():
             self._table_view.horizontalHeader().resizeSections(
-                QtGui.QHeaderView.ResizeToContents)
+                QtWidgets.QHeaderView.ResizeToContents)
             self._table_view.horizontalHeader().show()
             self._table_view.horizontalHeader().setStretchLastSection(True)
         else:
